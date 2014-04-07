@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<script src="jquery-1.7.2.min.js"></script>
+<script src="handlebars-1.0.rc.1.min.js"></script> 
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css">
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+
+<style>
+	body{background-image:url('http://wallpaper.pickywallpapers.com/1920x1200/lamborghini-aventador-lp700-in-dark.jpg');font-family:Constantia, Helvetica, sans-serif; color:#DDA0DD; font-size:22px;}
+h1 {color:#DDA0DD;}
+h2 {color:#DDA0DD;}
+h3 {color:#DDA0DD;}
+.clearfix{clear:both;}
+</style>
+
+<title>CAR SELECTION OPTIONS</title>
+</head>
+<body class="car">
+
+<form id="accounts" name="accounts" method="post" class="hidden">
+  <input type="hidden" id="finCompID" name="finCompID" />
+</form>
+<input type="hidden" id="redirectURL" name="redirectURL" value="/access/authreg/ESignRedirect?ver=myaccountsv2"/>
+
+<div data-role="page" id="container">
+	<div data-role="header">
+        <div class="lt-box"><h1>Car Evaluator</h1> </div>   
+        <div class="lt-box"><h3>Please select the details of the car you wish to buy!</h3> </div>        
+<div class="clearfix"></div>
+</div>
+<div class="clearfix"></div>
+      <div id="page1" class="row-fluid">
+          <form name="group" id="group" class="form-inline"> 
+		  
+            <div class="cost-options">
+			  <label style="margin-left:30px">Cost:</label>
+              <select name="allCosts" id="allCosts">
+				  <option value="Very High" {{#if grpSelected}} selected="selected">vhigh</option>
+				  <option value="High" {{#if grpSelected}} selected="selected">high</option>
+				  <option value="Medium" {{#if grpSelected}} selected="selected">med</option>
+				  <option value="Low" {{#if grpSelected}} selected="selected">low</option>
+              </select>
+			</div>
+			
+			<div class="maintenence-options">
+			  <label style="margin-left:30px">Maint:</label>
+              <select name="allMaintenence" id="allMaintenence">
+				  <option value="Very High" {{#if grpSelected}} selected="selected">vhigh</option>
+				  <option value="High" {{#if grpSelected}} selected="selected">high</option>
+				  <option value="Medium" {{#if grpSelected}} selected="selected">med</option>
+				  <option value="Low" {{#if grpSelected}} selected="selected">low</option>
+              </select>
+			</div>
+
+			<div class="doors-options">
+			  <label style="margin-left:30px">Doors:</label>
+              <select name="allDoors" id="allDoors">
+				  <option value="2" {{#if grpSelected}} selected="selected">2</option>
+				  <option value="3" {{#if grpSelected}} selected="selected">3</option>
+				  <option value="4" {{#if grpSelected}} selected="selected">4</option>
+				  <option value="more" {{#if grpSelected}} selected="selected">5-more</option>
+              </select>
+			</div>
+
+			<div class="persons-options">
+			  <label style="margin-left:30px">Persons:</label>
+              <select name="allPersons" id="allPersons">
+				  <option value="2" {{#if grpSelected}} selected="selected">2</option>
+				  <option value="4" {{#if grpSelected}} selected="selected">4</option>
+				  <option value="more" {{#if grpSelected}} selected="selected">more</option>
+              </select>
+			</div>
+
+			<div class="boot-options">
+			  <label style="margin-left:30px">Luggage Boot:</label>
+              <select name="allBoots" id="allBoots">
+				  <option value="small" {{#if grpSelected}} selected="selected">small</option>
+				  <option value="medium" {{#if grpSelected}} selected="selected">med</option>
+				  <option value="big" {{#if grpSelected}} selected="selected">big</option>
+              </select>
+			</div>
+
+			<div class="safey-options">
+			  <label style="margin-left:30px">Safety:</label>
+              <select name="allSafties" id="allSafties">
+				  <option value="low" {{#if grpSelected}} selected="selected">low</option>
+				  <option value="medium" {{#if grpSelected}} selected="selected">med</option>
+				  <option value="high" {{#if grpSelected}} selected="selected">high</option>
+              </select>
+			  </div>
+			  <input type="button" size="100" id="view-grp-btn" class="btn" value="Go Search for my car!">
+			</div>
+
+          </form>
+<div class="clearfix"></div>
+</div>
+
+<div class="lt-box">
+     <h3>   <label> Please submit the button and look for the results here: </label> <span id="results"></span></br> </h3>      
+</div>
+<div class="clearfix"></div>
+<div style="margin-top:100px;"><h3>DO YOU KNOW?</h3>Only 30% of cars in the current world are WORTH buying. Are you one among those 30%? </div>
+<br><br><br>
+<div data-role="footer" id="sitecount"></div>
+
+<script>
+$("#view-grp-btn").click(function() {
+		var selectedCost = $("#allCosts option:selected").text();
+		var selectedMaint = $("#allMaintenence option:selected").text();
+		var selectedDoors = $("#allDoors option:selected").text();
+		var selectedPersons = $("#allPersons option:selected").text();
+		var selectedBoot = $("#allBoots option:selected").text();
+		var selectedSafety = $("#allSafties option:selected").text();
+		//alert("selected cost:"+selectedCost);
+		var url = "http://134.193.136.127:8983/solr/new_core/select?q=cost_s%3A%22vhigh%22+AND+maint_s%3A%22vhigh%22+AND+doors_s%3A%222%22+AND+persons_s%3A%222%22+AND+bootspace_s%3A%22small%22+AND+safety_s%3A%22low%22&wt=json&indent=true";
+		query = $("#query").val();
+        qstr = 'q=' + escape(query);
+		var params = getstandardargs().concat(qstr);
+        var urlData = params.join('&');
+       // url = url+urlData;
+		//alert(url);
+		
+		$.ajaxSetup({ crossDomain: true, scriptCharset: "utf-8" , contentType: "jsonp; charset=utf-8"});
+		$.ajax({
+	//	var options = {
+			type : "GET", 
+	//        url : url,		
+	    	url : "http://134.193.136.127:8983/solr/new_core/select?wt=json&indent=true&hl=true&hl.fl=,features&json.wrf=loadData",data:{"q":'cost_s:"'+selectedCost+'" AND maint_s:"'+selectedMaint+'" AND doors_s:"'+selectedDoors+'" AND persons_s:"'+selectedPersons+'" AND bootspace_s:"'+selectedBoot+'" AND safety_s:"'+selectedSafety+'"'}, 
+	//		async : false, cache : false,
+			contentType: "application/json",
+			dataType : "jsonp",
+            jsonp : "callback",			
+			jsonpCallback : "loadData",
+			success : function(data, textStatus, jqXHR) {
+			//	alert("success");
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("error");
+			}
+		})
+	//	$.ajax(options);
+});
+
+function loadData(data) 
+{
+//alert("Load Data"+data);
+$.each(data.response.docs,function(i,doc){
+$("#results").append(doc.id);
+}
+);
+}
+
+function getstandardargs() {
+var params = [
+'wt=json'
+, 'indent=on'
+, 'hl=true'
+, 'hl.fl=,features'
+, 'json.wrf=loadData'
+];
+
+return params;
+}
+</script>
+
+<script> 
+   if(typeof(Storage)!=="undefined")
+   {
+    if (localStorage.clickcount)
+     {
+      localStorage.clickcount=Number(localStorage.clickcount)+1;
+     }
+    else
+     {
+      localStorage.clickcount=1;
+     }
+     if (localStorage.clickcount==1)
+       {
+       document.getElementById("sitecount").innerHTML="Welcome!! It's the first time you are visiting this web page...";
+       } 
+     else 
+       {
+       document.getElementById("sitecount").innerHTML="To date, You have visited this site " + localStorage.clickcount + " time(s). ThankYou!!";
+       }       
+   }
+   else
+    {
+     document.getElementById("sitecount").innerHTML="Sorry, your browser does not support web storage...";
+    }
+</script>
+
+</body>
+</html>
